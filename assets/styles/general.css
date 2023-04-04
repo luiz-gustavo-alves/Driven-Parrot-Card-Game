@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&display=swap');
 
+* {
+    box-sizing: border-box;
+}
+
 body {
 
     background-color: #EEF9BF;
@@ -15,15 +19,19 @@ h1 {
     font-size: 56px;
 }
 
-.cards-container {
+.main {
 
-    width: 1200px;
+    width: 1000px;
     margin: 0 auto;
+    background-color: blue;
+}
+
+.main .cards-container {
+
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    gap: 40px;
+    justify-content: space-around;
     background-color: red;
+    margin-bottom: 30px;
 }
 
 .card {
@@ -36,10 +44,23 @@ h1 {
 }
 
 /* Aplicando Responsividade */
-@media (max-width: 600px) {
+@media (max-width: 1000px) {
 
     h1 {
 
         font-size: 36px;
+    }
+
+    .main {
+
+        width: 100%;
+    }
+
+    .main .cards-container {
+
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 30px;
     }
 }

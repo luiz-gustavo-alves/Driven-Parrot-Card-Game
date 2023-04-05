@@ -1,12 +1,13 @@
 /* Variável global que armazena a quantidade total de cartas do jogo */
 let numCards;
 
-/* Array global que armazena o conteudo das cartas do jogo */
-let cardsList = [];
+const maxNumberCardsInContainer = 6;
 
-const cardContainer = document.querySelectorAll(".cards-container");
-const maxNumberCardsContainer = cardContainer[0].children.length;
-console.log(maxNumberCardsContainer);
+/* Array global que armazena o conteúdo das cartas do jogo */
+const cardsList = [];
+
+const parrotCardImages = ["bobrossparrot", "explodyparrot", "fiestaparrot", "metalparrot",
+                          "revertitparrot", "tripletsparrot", "unicornparrot"];
 
 startGame();
 
@@ -30,33 +31,46 @@ function startGame() {
     
         gameStart = true;
     }
-    selectCards();
+    createCards();
 }
 
-function selectCards() {
+function createCards() {
  
-    /* Função seleciona e armazena as cartas que serão utilizadas no jogo */
+    const main = document.querySelector(".main");
+    const maxNumberParrotCardImage = 2;
 
+    let parrotCardImageIndex = -1;
     let counter = 0;
-    for (let i = 0; i < cardContainer.length; i++) {
+    let content;
 
-        let cards = cardContainer[i].querySelectorAll(".card");
-        
-        for (let j = 0; j < cards.length; j++) {
+    while (counter < numCards) {
 
-            cardsList.push(cards[j]);
-            counter++;
+        /* Verifica se a quantidade de cartas ultrapassou o limite de cartas por container */
+        if (counter % maxNumberCardsInContainer == 0) {
+            content = `<div class="cards-container">`;
+        }
 
-            cardContainer[i].removeChild(cardContainer[i].children[0]);
+        /* Atualiza o indice para criação das imagens de verso */
+        if (counter % maxNumberParrotCardImage == 0) {
+            parrotCardImageIndex++;
+        }
 
-            if (counter >= numCards) {
+        content += `<div class="card">`;
+        content += `<div class="front-face face">`;
+        content += `<img src="./assets/images/cards/back.png"></div>`
+        content += `<div class="back-face face">`
+        content += `<img src="./assets/images/cards/${parrotCardImages[parrotCardImageIndex]}.gif"></div>`
+        content += `</div>`
 
-                cardsList.sort(shuffle);
-                showCards();
-                return;
-            }
+        counter++;
+
+        /* Fechar div de "cards-container" e atribuir o conteúdo para main */
+        if ((counter >= numCards) || (counter % maxNumberCardsInContainer == 0)) {
+            content += `</div>`
+            main.innerHTML += content;
         }
     }
+    showCards();
 }
 
 function shuffle() {
@@ -67,20 +81,33 @@ function shuffle() {
 
 function showCards() {
 
-    /* Função remove a classe hidden e mostra as cartas na tela do usuário */
+    /*  Armazena as cartas selecionadas em um Array Global */
+    const cardsContainer = document.querySelectorAll(".cards-container");
 
-    let counter = 0;
-    for (let i = 0; i < cardContainer.length; i++) {
-        
-        for (let j = 0; j < maxNumberCardsContainer; j++) {
+    for (let i = 0; i < cardsContainer.length; i++) {
 
-            cardsList[counter].classList.remove("hidden");
-            cardContainer[i].appendChild(cardsList[counter]);
-            counter++;
-            
-            if (counter >= numCards) {
-                return;
-            }
+        let cards = cardsContainer[i].querySelectorAll(".card");
+        for (let j = 0; j < cards.length; j++) {
+
+            cardsList.push(cards[j]);
+            cardsContainer[i].removeChild(cardsContainer[i].firstChild);
         }
+    }
+
+    /*  Embaralha as cartas selecionadas */
+    cardsList.sort(shuffle);
+
+    let cardContainerIndex = -1;
+    let counter = 0;
+
+    /*  Mostra as cartas selecionadas */
+    while (counter < numCards) {
+
+        if (counter % maxNumberCardsInContainer == 0) {
+            cardContainerIndex++;
+        }
+        
+        cardsContainer[cardContainerIndex].appendChild(cardsList[counter]);
+        counter++;
     }
 }

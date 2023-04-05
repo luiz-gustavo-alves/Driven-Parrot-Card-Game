@@ -1,6 +1,10 @@
 /* Variável global que armazena a quantidade total de cartas do jogo */
 let numCards;
 
+/* Array global que armazena a quantidade de cartas do jogo */
+let cardsList = [];
+
+/* Variável global que armazena a quantidade de clicks por rodada */
 let numClicks = 0;
 
 /* Flags globais para verificar cartas selecionadas */
@@ -8,7 +12,7 @@ let firstSelectedCard = null;
 let secondSelectedCard = null;
 
 const parrotCardImgs = ["bobrossparrot", "explodyparrot", "fiestaparrot", "metalparrot",
-                          "revertitparrot", "tripletsparrot", "unicornparrot"];
+                        "revertitparrot", "tripletsparrot", "unicornparrot"];
 
 startGame();
 
@@ -62,16 +66,16 @@ function createCards() {
 
         content += `<div class="card" onclick="selectCard(this)">`;
         content += `<div class="front-face face">`;
-        content += `<img src="./assets/images/cards/back.png" alt="front-parrot" title="front-parrot"></div>`;
+        content += `<img src="./assets/images/cards/back.png" alt="frontparrot" title="frontparrot"></div>`;
         content += `<div class="back-face face ${parrotCardImg}">`;
         content += `<img src="./assets/images/cards/${parrotCardImg}.gif" alt="${parrotCardImg}" title="${parrotCardImg}"></div>`;
-        content += `</div>`
+        content += `</div>`;
 
         counter++;
 
         /* Fechar div de "cards-container" e atribuir o conteúdo para main */
         if ((counter >= numCards) || (counter % maxNumCardsInContainer == 0)) {
-            content += `</div>`
+            content += `</div>`;
             main.innerHTML += content;
         }
     }
@@ -87,7 +91,6 @@ function shuffle() {
 function showCards() {
 
     const cardsContainer = document.querySelectorAll(".cards-container");
-    const cardsList = [];
 
     /*  Armazena as cartas selecionadas em cardsList */
     for (let i = 0; i < cardsContainer.length; i++) {
@@ -118,6 +121,7 @@ function showCards() {
         cardsContainer[cardContainerIndex].appendChild(cardsList[counter]);
         counter++;
     }
+    cardsList = [];
 }
 
 function selectCard(selector) {
@@ -145,6 +149,9 @@ function selectCard(selector) {
         
         firstSelectedCard.classList.add("right-card");
         secondSelectedCard.classList.add("right-card");
+
+        cardsList.push(firstSelectedCard);
+        cardsList.push(secondSelectedCard);
     } 
 
     firstSelectedCard = null;
@@ -155,12 +162,8 @@ function selectCard(selector) {
 
 function checkIfGameEnded() {
 
-    const cards = document.querySelectorAll(".card");
-    for (let i = 0; i < cards.length; i++) {
-        
-        if (!cards[i].classList.contains("right-card")) {
-            return;
-        }
+    if (cardsList.length < numCards) {
+        return;
     }
     alert(`Você ganhou em ${numClicks} jogadas!`);
 }

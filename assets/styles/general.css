@@ -29,7 +29,6 @@ h1 {
 
     display: flex;
     justify-content: space-around;
-    background-color: red;
     margin-bottom: 30px;
 }
 
@@ -63,11 +62,6 @@ h1 {
     transition: all .5s;
     transform-style: preserve-3d;
 
-}
-
-.front-face {
-
-    transform: rotateY(0deg);
 }
 
 .back-face {

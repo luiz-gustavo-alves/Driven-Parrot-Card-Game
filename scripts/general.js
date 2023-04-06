@@ -182,7 +182,7 @@ function selectCard(selector) {
         }
         else {
             waitFlipCards = true;
-            setTimeout(flipCards, 500);
+            setTimeout(flipCards, 1000);
         } 
     }
 }

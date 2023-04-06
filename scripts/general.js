@@ -65,13 +65,15 @@ function createCards() {
     const parrotCardImgs = ["bobrossparrot", "explodyparrot", "fiestaparrot", "metalparrot",
                             "revertitparrot", "tripletsparrot", "unicornparrot"];
 
+    const cards = [];
+
     for (let i = 0; i < numCards / 2; i++) {
-        cardsList.push(parrotCardImgs[i]);
-        cardsList.push(parrotCardImgs[i]);
+        cards.push(parrotCardImgs[i]);
+        cards.push(parrotCardImgs[i]);
     }
 
     /* Embaralha as cartas */
-    cardsList.sort(shuffle);
+    cards.sort(shuffle);
 
     const maxNumCardsInContainer = 6;
     let counter = 0;
@@ -85,8 +87,8 @@ function createCards() {
         }
         
         /* Variável seleciona a primeira carta e remove o primeiro elemento do Array */
-        let parrotCardImg = cardsList[0];
-        cardsList.shift();
+        let parrotCardImg = cards[0];
+        cards.shift();
 
         content += `<div class="card" onclick="selectCard(this)">`;
         content += `<div class="face">`;
@@ -103,7 +105,6 @@ function createCards() {
             main.innerHTML += content;
         }
     } 
-    cardsList = [];
 }
 
 function flipCards() {
@@ -158,11 +159,11 @@ function selectCard(selector) {
             secondSelectedCard.classList.add("correct-card");
             cardsList.push(firstSelectedCard);
             cardsList.push(secondSelectedCard);
-            checkIfGameEnded();
+            setTimeout(checkIfGameEnded, 1000);
         }
         else {
             waitFlipCards = true;
-            setTimeout(flipCards, 1000);
+            setTimeout(flipCards, 500);
         } 
     }
 }
@@ -173,4 +174,27 @@ function checkIfGameEnded() {
         return;
     }
     alert(`Você ganhou em ${numClicks} jogadas!`);
+
+    while (true) {
+
+        let msg = prompt("Gostaria de jogar novamente?");
+
+        if (msg == "sim") {
+
+            /* Reiniciar HTML, limpar lista e número de clicks */
+            const main = document.querySelector(".main");
+            main.innerHTML = "";
+
+            cardsList = [];
+            numClicks = 0;
+            
+            resetSelectedCards();
+            startGame();
+            return;
+        }
+
+        if (msg == "não") {
+            return;
+        }
+    }
 }

@@ -36,10 +36,6 @@ h1 {
 
     width: 117px;
     height: 146px; 
-    background-color: #A7E9AF;
-    border: 1px solid #99CEA8;
-    border-radius: 10px;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, .3);
     position: relative;
 }
 
@@ -53,6 +49,10 @@ h1 {
 
     width: 100%;
     height: 100%;
+    background-color: #A7E9AF;
+    border: 1px solid #99CEA8;
+    border-radius: 10px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, .3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -69,19 +69,14 @@ h1 {
     transform: rotateY(180deg);
 }
 
-.card:active .back-face {
+.back {
 
     transform: rotateY(0deg);
 }
 
-.card:active .front-face {
+.front {
 
     transform: rotateY(-180deg);
-}
-
-.hidden {
-    
-    display: none;
 }
 
 /* Aplicando Responsividade */

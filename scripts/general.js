@@ -40,13 +40,28 @@ function startGame() {
     createCards();
 }
 
+function getRandomCard(cardsList) {
+
+    cardsList.sort(shuffle);
+    return cardsList[0];
+}
+
+function shuffle() {
+
+    /*  Função embaralha as cartas de forma pseudo-aleatória */
+    return Math.random() - 0.5;
+}
+
 function createCards() {
  
     const main = document.querySelector(".main");
-    const maxNumParrotCardImg = 2;
     const maxNumCardsInContainer = 6;
 
-    let parrotCardImgIndex = -1;
+    for (let i = 0; i < numCards / 2; i++) {
+        cardsList.push(parrotCardImgs[i]);
+        cardsList.push(parrotCardImgs[i]);
+    }
+
     let counter = 0;
     let content;
 
@@ -57,12 +72,9 @@ function createCards() {
             content = `<div class="cards-container">`;
         }
 
-        /* Atualiza o indice para criação das imagens de verso */
-        if (counter % maxNumParrotCardImg == 0) {
-            parrotCardImgIndex++;
-        }
-
-        let parrotCardImg = parrotCardImgs[parrotCardImgIndex];
+        /* Embaralha as cartas e remove a primeira carta do array */
+        let parrotCardImg = getRandomCard(cardsList);
+        cardsList.shift();
 
         content += `<div class="card" onclick="selectCard(this)">`;
         content += `<div class="front-face face">`;
@@ -79,55 +91,13 @@ function createCards() {
             main.innerHTML += content;
         }
     }
-    showCards();
-}
-
-function shuffle() {
-
-    /*  Função embaralha as cartas de forma pseudo-aleatória */
-    return Math.random() - 0.5;
-}
-
-function showCards() {
-
-    const cardsContainer = document.querySelectorAll(".cards-container");
-
-    /*  Armazena as cartas selecionadas em cardsList */
-    for (let i = 0; i < cardsContainer.length; i++) {
-
-        let cards = cardsContainer[i].querySelectorAll(".card");
-        for (let j = 0; j < cards.length; j++) {
-
-            cardsList.push(cards[j]);
-            cardsContainer[i].removeChild(cardsContainer[i].firstChild);
-        }
-    }
-
-    /*  Embaralha as cartas selecionadas */
-    cardsList.sort(shuffle);
-
-    const maxNumCardsInContainer = 6;
-
-    let cardContainerIndex = -1;
-    let counter = 0;
-
-    /*  Mostra as cartas selecionadas */
-    while (counter < numCards) {
-
-        if (counter % maxNumCardsInContainer == 0) {
-            cardContainerIndex++;
-        }
-        
-        cardsContainer[cardContainerIndex].appendChild(cardsList[counter]);
-        counter++;
-    }
     cardsList = [];
 }
 
 function selectCard(selector) {
 
     /* Verifica se usuário clicou na mesma carta da rodada passada ou se a carta já está virada */
-    if (firstSelectedCard == selector || selector.classList.contains("right-card")) {
+    if (firstSelectedCard == selector || selector.classList.contains("correct-card")) {
         return;
     }
 
@@ -147,16 +117,14 @@ function selectCard(selector) {
     /* Verifica se as cartas selecionadas possuem a mesma classe */
     if (backFirstCard.classList.contains(backSecondCard.classList[classLen - 1])) {
         
-        firstSelectedCard.classList.add("right-card");
-        secondSelectedCard.classList.add("right-card");
-
+        firstSelectedCard.classList.add("correct-card");
+        secondSelectedCard.classList.add("correct-card");
         cardsList.push(firstSelectedCard);
         cardsList.push(secondSelectedCard);
     } 
 
     firstSelectedCard = null;
     secondSelectedCard = null;
-
     checkIfGameEnded();
 }
 

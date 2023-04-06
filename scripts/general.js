@@ -7,6 +7,10 @@ let cardsList = [];
 /* Variável global que armazena a quantidade de clicks por rodada */
 let numClicks = 0;
 
+/* Variável global que armazena o tempo em segundos da rodada */
+let timer = 0;
+let timerIntervalID;
+
 /* Flags globais para verificar cartas selecionadas */
 let firstSelectedCard, secondSelectedCard;
 let frontFirstCard, backFirstCard;
@@ -18,6 +22,19 @@ let waitFlipCards = false;
 
 resetSelectedCards();
 startGame();
+
+function startTimer() {
+
+    const timerContainer = document.querySelector(".timer");
+
+    if (timer >= 999 || !(Number.isInteger(timer))) {
+        timer = "999+";
+    } 
+    else {
+        timer++;
+    }
+    timerContainer.innerText = `${timer}`;
+}
 
 function resetSelectedCards() {
 
@@ -105,6 +122,8 @@ function createCards() {
             main.innerHTML += content;
         }
     } 
+    /* Inicia temporizador do jogo */
+    timerIntervalID = setInterval(startTimer, 1000);
 }
 
 function flipCards() {
@@ -173,7 +192,7 @@ function checkIfGameEnded() {
     if (cardsList.length < numCards) {
         return;
     }
-    alert(`Você ganhou em ${numClicks} jogadas!`);
+    alert(`Você ganhou em ${numClicks} jogadas! A duração do jogo foi de ${timer} segundos!`);
 
     while (true) {
 
@@ -181,12 +200,17 @@ function checkIfGameEnded() {
 
         if (msg == "sim") {
 
-            /* Reiniciar HTML, limpar lista e número de clicks */
+            /* Reiniciar HTML, limpar lista, temporizador e número de clicks */
             const main = document.querySelector(".main");
             main.innerHTML = "";
 
+            const timerContainer = document.querySelector(".timer");
+            timerContainer.innerText = 0;
+
+            clearInterval(timerIntervalID);
             cardsList = [];
             numClicks = 0;
+            timer = 0;
             
             resetSelectedCards();
             startGame();
@@ -194,6 +218,7 @@ function checkIfGameEnded() {
         }
 
         if (msg == "não") {
+            clearInterval(timerIntervalID);
             return;
         }
     }

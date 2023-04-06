@@ -8,13 +8,26 @@ let cardsList = [];
 let numClicks = 0;
 
 /* Flags globais para verificar cartas selecionadas */
-let firstSelectedCard = null;
-let secondSelectedCard = null;
+let firstSelectedCard, secondSelectedCard;
+let frontFirstCard, backFirstCard;
+let frontSecondCard, backSecondCard;
 
-const parrotCardImgs = ["bobrossparrot", "explodyparrot", "fiestaparrot", "metalparrot",
-                        "revertitparrot", "tripletsparrot", "unicornparrot"];
+/* Flag para impedir que o usuário selecione uma terceira carta enquanto 
+ * duas cartas diferentes estão sendo desviradas */
+let waitFlipCards = false;
 
+resetSelectedCards();
 startGame();
+
+function resetSelectedCards() {
+
+    firstSelectedCard = null;
+    secondSelectedCard = null;
+    frontFirstCard = null;
+    backFirstCard = null;
+    frontSecondCard = null;
+    backSecondCard = null;
+}
 
 function startGame() {
 
@@ -34,16 +47,10 @@ function startGame() {
         if (numCards % 2 == 1 || (numCards < 4 || numCards > 14)) {
             continue;
         }
-    
+
         gameStart = true;
     }
     createCards();
-}
-
-function getRandomCard(cardsList) {
-
-    cardsList.sort(shuffle);
-    return cardsList[0];
 }
 
 function shuffle() {
@@ -55,13 +62,18 @@ function shuffle() {
 function createCards() {
  
     const main = document.querySelector(".main");
-    const maxNumCardsInContainer = 6;
+    const parrotCardImgs = ["bobrossparrot", "explodyparrot", "fiestaparrot", "metalparrot",
+                            "revertitparrot", "tripletsparrot", "unicornparrot"];
 
     for (let i = 0; i < numCards / 2; i++) {
         cardsList.push(parrotCardImgs[i]);
         cardsList.push(parrotCardImgs[i]);
     }
 
+    /* Embaralha as cartas */
+    cardsList.sort(shuffle);
+
+    const maxNumCardsInContainer = 6;
     let counter = 0;
     let content;
 
@@ -71,17 +83,17 @@ function createCards() {
         if (counter % maxNumCardsInContainer == 0) {
             content = `<div class="cards-container">`;
         }
-
-        /* Embaralha as cartas e remove a primeira carta do array */
-        let parrotCardImg = getRandomCard(cardsList);
+        
+        /* Variável seleciona a primeira carta e remove o primeiro elemento do Array */
+        let parrotCardImg = cardsList[0];
         cardsList.shift();
 
         content += `<div class="card" onclick="selectCard(this)">`;
-        content += `<div class="front-face face">`;
+        content += `<div class="face">`;
         content += `<img src="./assets/images/cards/back.png" alt="frontparrot" title="frontparrot"></div>`;
-        content += `<div class="back-face face ${parrotCardImg}">`;
-        content += `<img src="./assets/images/cards/${parrotCardImg}.gif" alt="${parrotCardImg}" title="${parrotCardImg}"></div>`;
-        content += `</div>`;
+        content += `<div class="back-face face">`;
+        content += `<img class="${parrotCardImg}" src="./assets/images/cards/${parrotCardImg}.gif"`;
+        content += `alt="${parrotCardImg}" title="${parrotCardImg}"></div></div>`;
 
         counter++;
 
@@ -90,42 +102,69 @@ function createCards() {
             content += `</div>`;
             main.innerHTML += content;
         }
-    }
+    } 
     cardsList = [];
+}
+
+function flipCards() {
+
+    backFirstCard.classList.toggle("back");
+    backSecondCard.classList.toggle("back");
+    frontFirstCard.classList.toggle("front");
+    frontSecondCard.classList.toggle("front");
+    waitFlipCards = false;
 }
 
 function selectCard(selector) {
 
-    /* Verifica se usuário clicou na mesma carta da rodada passada ou se a carta já está virada */
-    if (firstSelectedCard == selector || selector.classList.contains("correct-card")) {
-        return;
+    if (!waitFlipCards) {
+
+        if (secondSelectedCard != null) {
+            resetSelectedCards();
+        }
+    
+        /* Verifica se usuário clicou na mesma carta da rodada passada ou se a carta já está virada */
+        if (firstSelectedCard == selector || selector.classList.contains("correct-card")) {
+            return;
+        }
+    
+        numClicks++;
+    
+        if (firstSelectedCard == null) {
+
+            firstSelectedCard = selector;
+            frontFirstCard = firstSelectedCard.querySelector(".face");
+            backFirstCard = firstSelectedCard.querySelector(".back-face");
+
+            frontFirstCard.classList.toggle("front");
+            backFirstCard.classList.toggle("back");
+            return;
+        }
+    
+        secondSelectedCard = selector;
+        frontSecondCard = secondSelectedCard.querySelector(".face");
+        backSecondCard = secondSelectedCard.querySelector(".back-face");
+
+        frontSecondCard.classList.toggle("front");
+        backSecondCard.classList.toggle("back");
+    
+        const backFirstImg = backFirstCard.querySelector("img").classList[0];
+        const backSecondImg = backSecondCard.querySelector("img").classList[0];
+    
+        /* Verifica se as cartas selecionadas possuem a mesma classe */
+        if (backFirstImg === backSecondImg) {
+            
+            firstSelectedCard.classList.add("correct-card");
+            secondSelectedCard.classList.add("correct-card");
+            cardsList.push(firstSelectedCard);
+            cardsList.push(secondSelectedCard);
+            checkIfGameEnded();
+        }
+        else {
+            waitFlipCards = true;
+            setTimeout(flipCards, 1000);
+        } 
     }
-
-    numClicks++;
-
-    if (firstSelectedCard == null) {
-        firstSelectedCard = selector;
-        return;
-    }
-
-    secondSelectedCard = selector;
-
-    const backFirstCard = firstSelectedCard.querySelector(".back-face");
-    const backSecondCard = secondSelectedCard.querySelector(".back-face");
-    const classLen = backSecondCard.classList.length;
-
-    /* Verifica se as cartas selecionadas possuem a mesma classe */
-    if (backFirstCard.classList.contains(backSecondCard.classList[classLen - 1])) {
-        
-        firstSelectedCard.classList.add("correct-card");
-        secondSelectedCard.classList.add("correct-card");
-        cardsList.push(firstSelectedCard);
-        cardsList.push(secondSelectedCard);
-    } 
-
-    firstSelectedCard = null;
-    secondSelectedCard = null;
-    checkIfGameEnded();
 }
 
 function checkIfGameEnded() {

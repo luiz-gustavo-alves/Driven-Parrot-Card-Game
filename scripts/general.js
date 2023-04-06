@@ -96,13 +96,9 @@ function createCards() {
     let counter = 0;
     let content;
 
+    content = `<div class="cards-container">`;
     while (counter < numCards) {
 
-        /* Verifica se a quantidade de cartas ultrapassou o limite de cartas por container */
-        if (counter % maxNumCardsInContainer == 0) {
-            content = `<div class="cards-container">`;
-        }
-        
         /* Variável seleciona a primeira carta e remove o primeiro elemento do Array */
         let parrotCardImg = cards[0];
         cards.shift();
@@ -117,7 +113,7 @@ function createCards() {
         counter++;
 
         /* Fechar div de "cards-container" e atribuir o conteúdo para main */
-        if ((counter >= numCards) || (counter % maxNumCardsInContainer == 0)) {
+        if (counter >= numCards) {
             content += `</div>`;
             main.innerHTML += content;
         }
@@ -178,7 +174,7 @@ function selectCard(selector) {
             secondSelectedCard.classList.add("correct-card");
             cardsList.push(firstSelectedCard);
             cardsList.push(secondSelectedCard);
-            setTimeout(checkIfGameEnded, 1000);
+            setTimeout(checkIfGameEnded, 200);
         }
         else {
             waitFlipCards = true;

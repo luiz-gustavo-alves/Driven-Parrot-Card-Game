@@ -48,7 +48,8 @@ h1 {
 
     display: flex;
     justify-content: space-around;
-    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 40px;
 }
 
 .card {
@@ -123,6 +124,7 @@ h1 {
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        gap: 30px;
+        gap: 40px;
+        margin-bottom: 40px;
     }
 }

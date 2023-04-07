@@ -103,11 +103,11 @@ function createCards() {
         let parrotCardImg = cards[0];
         cards.shift();
 
-        content += `<div class="card" onclick="selectCard(this)">`;
+        content += `<div data-test="card" class="card" onclick="selectCard(this)">`;
         content += `<div class="face">`;
-        content += `<img src="./assets/images/cards/back.png" alt="frontparrot" title="frontparrot"></div>`;
+        content += `<img data-test="face-down-image" src="./assets/images/cards/back.png" alt="frontparrot" title="frontparrot"></div>`;
         content += `<div class="back-face face">`;
-        content += `<img class="${parrotCardImg}" src="./assets/images/cards/${parrotCardImg}.gif"`;
+        content += `<img data-test="face-up-image" class="${parrotCardImg}" src="./assets/images/cards/${parrotCardImg}.gif"`;
         content += `alt="${parrotCardImg}" title="${parrotCardImg}"></div></div>`;
 
         counter++;

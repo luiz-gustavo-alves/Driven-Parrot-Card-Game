@@ -54,14 +54,10 @@ function startGame() {
 
         numCards = Number(prompt("Com quantas cartas você quer jogar?"));
     
-        /*  Verifica se o valor de entrada do prompt é um numero inteiro  */
-        if (!Number.isInteger(numCards)) {
-            continue;
-        }
-     
-         /*  Verifica se o numero de cartas é impar ou se a quantidade de 
-          *  cartas é menor que 4 ou maior que 14  */
-        if (numCards % 2 == 1 || (numCards < 4 || numCards > 14)) {
+         /*  Verifica se o valor de entrada do prompt é um numero inteiro, se o 
+          *  numero de cartas é impar ou se a quantidade de cartas está de acordo com 
+          *  os limites especificados */
+        if (!Number.isInteger(numCards) || numCards % 2 === 1 || (numCards < 4 || numCards > 14)) {
             continue;
         }
 
@@ -92,7 +88,6 @@ function createCards() {
     /* Embaralha as cartas */
     cards.sort(shuffle);
 
-    const maxNumCardsInContainer = 6;
     let counter = 0;
     let content;
 
@@ -135,12 +130,12 @@ function selectCard(selector) {
 
     if (!waitFlipCards) {
 
-        if (secondSelectedCard != null) {
+        if (secondSelectedCard !== null) {
             resetSelectedCards();
         }
     
         /* Verifica se usuário clicou na mesma carta da rodada passada ou se a carta já está virada */
-        if (firstSelectedCard == selector || selector.classList.contains("correct-card")) {
+        if (firstSelectedCard === selector || selector.classList.contains("correct-card")) {
             return;
         }
     
@@ -168,7 +163,8 @@ function selectCard(selector) {
         const backSecondImg = backSecondCard.querySelector("img").classList[0];
     
         /* Verifica se as cartas selecionadas possuem a mesma classe */
-        if (backFirstImg === backSecondImg) {
+        if (backFirstImg === backSecondImg) 
+        {
             
             firstSelectedCard.classList.add("correct-card");
             secondSelectedCard.classList.add("correct-card");
@@ -190,11 +186,12 @@ function checkIfGameEnded() {
     }
     alert(`Você ganhou em ${numClicks} jogadas! A duração do jogo foi de ${timer} segundos!`);
 
+    let msg;
     while (true) {
 
-        let msg = prompt("Gostaria de jogar novamente?");
+        msg = prompt("Você gostaria de reiniciar a partida? (sim ou não)");
 
-        if (msg == "sim") {
+        if (msg === "sim") {
 
             /* Reiniciar HTML, limpar lista, temporizador e número de clicks */
             const main = document.querySelector(".main");
@@ -203,17 +200,17 @@ function checkIfGameEnded() {
             const timerContainer = document.querySelector(".timer");
             timerContainer.innerText = 0;
 
-            clearInterval(timerIntervalID);
             cardsList = [];
             numClicks = 0;
             timer = 0;
-            
+
+            clearInterval(timerIntervalID);
             resetSelectedCards();
             startGame();
             return;
         }
 
-        if (msg == "não") {
+        if (msg === "não") {
             clearInterval(timerIntervalID);
             return;
         }
